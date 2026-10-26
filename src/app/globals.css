@@ -103,7 +103,52 @@
   --blur-glow-lg: 517px;
 
   /* Motion */
-  --animate-marquee: marquee 40s linear infinite;
+  --animate-marquee: marquee 25s linear infinite;
+  --animate-twinkle: twinkle 2.4s ease-in-out infinite;
+  --animate-glow-drift: glow-drift 4s ease-in-out infinite alternate;
+  --animate-pill-drift: pill-drift 2s ease-in-out infinite alternate;
+
+  @keyframes glow-drift {
+    from {
+      --glow-mx: 27.8%;
+      --glow-my: 13.5%;
+      --glow-cx: 80.4%;
+      --glow-cy: 98.6%;
+    }
+    to {
+      --glow-mx: 80%;
+      --glow-my: 70%;
+      --glow-cx: 15%;
+      --glow-cy: 20%;
+    }
+  }
+
+  @keyframes pill-drift {
+    from {
+      --pill-mx: 27.8%;
+      --pill-my: -51%;
+      --pill-cx: 80.4%;
+      --pill-cy: 265%;
+    }
+    to {
+      --pill-mx: 80%;
+      --pill-my: 120%;
+      --pill-cx: 15%;
+      --pill-cy: -60%;
+    }
+  }
+
+  @keyframes twinkle {
+    0%,
+    100% {
+      opacity: 1;
+      transform: scale(1);
+    }
+    50% {
+      opacity: 0.5;
+      transform: scale(0.75);
+    }
+  }
 
   @keyframes marquee {
     from {
@@ -113,6 +158,50 @@
       transform: translateX(-50%);
     }
   }
+}
+
+/* Registered so the browser can interpolate gradient centres inside keyframes. */
+@property --glow-mx {
+  syntax: "<percentage>";
+  inherits: false;
+  initial-value: 27.8%;
+}
+@property --glow-my {
+  syntax: "<percentage>";
+  inherits: false;
+  initial-value: 13.5%;
+}
+@property --glow-cx {
+  syntax: "<percentage>";
+  inherits: false;
+  initial-value: 80.4%;
+}
+@property --glow-cy {
+  syntax: "<percentage>";
+  inherits: false;
+  initial-value: 98.6%;
+}
+
+/* Same idea for the pill glow, which uses a much taller radius (hence the y range). */
+@property --pill-mx {
+  syntax: "<percentage>";
+  inherits: false;
+  initial-value: 27.8%;
+}
+@property --pill-my {
+  syntax: "<percentage>";
+  inherits: false;
+  initial-value: -51%;
+}
+@property --pill-cx {
+  syntax: "<percentage>";
+  inherits: false;
+  initial-value: 80.4%;
+}
+@property --pill-cy {
+  syntax: "<percentage>";
+  inherits: false;
+  initial-value: 265%;
 }
 
 /*
@@ -126,14 +215,14 @@
   background-color: var(--color-black);
   background-image:
     radial-gradient(
-      124% 224% at 27.8% 13.5%,
+      124% 224% at var(--glow-mx) var(--glow-my),
       color-mix(in srgb, var(--color-glow-magenta) 88%, transparent),
       color-mix(in srgb, var(--color-glow-magenta) 44%, transparent) 42%,
       color-mix(in srgb, var(--color-glow-magenta) 14%, transparent) 71%,
       transparent
     ),
     radial-gradient(
-      124% 224% at 80.4% 98.6%,
+      124% 224% at var(--glow-cx) var(--glow-cy),
       color-mix(in srgb, var(--color-brand-cyan) 88%, transparent),
       color-mix(in srgb, var(--color-brand-cyan) 44%, transparent) 42%,
       color-mix(in srgb, var(--color-brand-cyan) 14%, transparent) 71%,
@@ -146,14 +235,14 @@
   background-color: var(--color-black);
   background-image:
     radial-gradient(
-      124.5% 834% at 27.8% -51%,
+      124.5% 834% at var(--pill-mx) var(--pill-my),
       color-mix(in srgb, var(--color-glow-magenta) 62%, transparent),
       color-mix(in srgb, var(--color-glow-magenta) 31%, transparent) 42%,
       color-mix(in srgb, var(--color-glow-magenta) 10%, transparent) 71%,
       transparent
     ),
     radial-gradient(
-      124.5% 834% at 80.4% 265%,
+      124.5% 834% at var(--pill-cx) var(--pill-cy),
       color-mix(in srgb, var(--color-brand-cyan) 62%, transparent),
       color-mix(in srgb, var(--color-brand-cyan) 31%, transparent) 42%,
       color-mix(in srgb, var(--color-brand-cyan) 10%, transparent) 71%,

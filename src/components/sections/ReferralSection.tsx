@@ -9,10 +9,10 @@ import { bookingCta, referral } from "@/data/landing";
  * are percentages of the card; the two blurred ones only show from `lg`.
  */
 const coinClasses = [
-  "-z-10 hidden lg:block left-[29.9%] -top-77.5 w-[30.7%] blur-coin",
+  "-z-10 hidden lg:block left-[10.9%] -top-77.5 w-[30.7%] blur-coin",
   "-z-10 -right-12 -bottom-14 w-32 lg:right-auto lg:bottom-auto lg:left-[77%] lg:top-37.25 lg:w-[30.7%]",
-  "z-10 hidden lg:block left-[15.9%] top-73 w-[22.7%] blur-coin-sm",
-  "z-10 hidden sm:block left-[29.9%] top-68 w-[7.1%]",
+  "z-10 hidden lg:block right-[80%] top-73 w-[22.7%] blur-coin-sm -scale-x-100",
+  "z-10 hidden sm:block left-[23%] top-68 w-[7.1%] -scale-x-100",
 ];
 
 /** Referral card (Figma 31:4786): glow card, faded "REWARDS" watermark, coins, offer and CTA. */

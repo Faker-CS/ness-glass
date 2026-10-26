@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { ButtonLink } from "@/components/ui/Button";
+import { Sparkle } from "@/components/ui/Sparkle";
 import { bookingCta, type Offer } from "@/data/landing";
 import { cn } from "@/lib/cn";
 
@@ -22,8 +23,21 @@ export function OfferCard({ offer, className }: OfferCardProps) {
         width={offer.image.width}
         height={offer.image.height}
         sizes="384px"
-        className="absolute inset-x-6 top-6 -z-10 w-[calc(100%-3rem)] transition-transform duration-500 ease-out motion-safe:group-focus-within:-translate-y-2/5 motion-safe:group-focus-within:rotate-6 motion-safe:group-hover:-translate-y-2/5 motion-safe:group-hover:rotate-6"
-      />
+        style={{
+          transform: offer.image.src.includes("banknotes")
+            ? "scaleX(-1)"
+            : "none",
+        }}
+        className="absolute inset-x-6 top-6 -z-10 w-[calc(100%-3rem)] transition-transform duration-500 ease-out motion-safe:group-focus-within:-translate-y-3/5 motion-safe:group-focus-within:rotate-6 motion-safe:group-hover:-translate-y-3/5 motion-safe:group-hover:rotate-6 motion-safe:group-hover:drop-shadow-[0_0_45px_var(--color-white)]  brightness-125"/>
+      {/* Sparkles appear around the image once it slides out. */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-x-0 -top-16 -z-10 h-24 opacity-0 transition-opacity duration-500 group-focus-within:opacity-100 group-hover:opacity-100 delay-300 duration-300 ease-in-out drop-shadow-[0_0_45px_var(--color-white)]  brightness-125"
+      >
+        <Sparkle size={42} className="absolute left-[0%] top-[-20%] motion-safe:group-hover:animate-pulse-1 delay-700 duration-700 ease-in-out" />
+        <Sparkle size={30} className="absolute left-[55%] top-[-115%] motion-safe:group-hover:animate-pulse-1 delay-700 duration-700 ease-in-out" />
+        <Sparkle size={20} className="absolute right-[0%] top-[15%] motion-safe:group-hover:animate-pulse-1 delay-700 duration-700 ease-in-out" />
+      </div>
       <div className="flex flex-col items-center gap-2.5 overflow-hidden rounded-offer bg-glow-offer px-2.5 py-4 text-snow">
         <div className="flex w-full max-w-86.5 flex-col gap-2">
           {/* Figma keeps a 3-line (183 px) box for the 2-line price, which spaces the card out. */}
@@ -48,7 +62,7 @@ export function OfferCard({ offer, className }: OfferCardProps) {
           </div>
         </div>
         <div className="w-full p-2">
-          <ButtonLink href={bookingCta.href} variant="outline" className="w-full">
+          <ButtonLink href={bookingCta.href} variant="outline" className="w-full animate-pill-drift motion-reduce:animate-none">
             {bookingCta.fr}
           </ButtonLink>
         </div>

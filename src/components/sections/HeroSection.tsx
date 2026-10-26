@@ -10,7 +10,7 @@ import { bookingCta, hero, marqueeItems } from "@/data/landing";
  */
 export function HeroSection() {
   return (
-    <section id="accueil" aria-labelledby="hero-title" className="relative overflow-hidden bg-glow-hero text-snow xl:h-200">
+    <section id="accueil" aria-labelledby="hero-title" className="relative overflow-hidden bg-glow-hero animate-glow-drift motion-reduce:animate-none text-snow xl:h-200">
       <Container className="relative z-10 flex flex-col gap-8 pt-35 xl:flex-row xl:items-start xl:justify-between">
         <h1 id="hero-title" className="max-w-142 font-display text-h2 font-bold uppercase">
           {hero.title}
