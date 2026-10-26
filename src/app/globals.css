@@ -1,26 +1,294 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+/*
+ * Design tokens extracted from Figma "Mecatronics" → "Ness glass french" (31:8001).
+ * Values come from the .fig local copy (node ids in PROGRESS.md). Blur tokens are
+ * Figma blur radius / 2, which is the CSS standard deviation equivalent.
+ */
+@theme {
+  /* Only the project palette is available as colour utilities. */
+  --color-*: initial;
+  --color-white: #ffffff;
+  --color-black: #000000;
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+  /* Brand */
+  --color-brand: #cc05fd;
+  --color-brand-cyan: #0bd2f8;
+  --color-glow-magenta: #cd00d7;
+  --color-gradient-from: #b200c0;
+  --color-gradient-to: #08effb;
+  --color-cyan-bright: #00dfeb;
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+  /* Neutrals */
+  --color-ink: #333333;
+  --color-ink-strong: #232323;
+  --color-muted: #696d76;
+  --color-muted-dark: #a9a9a9;
+  --color-fineprint: #646464;
+  --color-snow: #fcfcfc;
+  --color-mist: #f6f6f6;
+  --color-line: #5b5b5b;
+  --color-silver: #cecece;
+
+  /* Dark surfaces */
+  --color-night: #0c0c0c;
+  --color-night-card: #141414;
+  --color-plum: #270031;
+  --color-plum-deep: #28002a;
+
+  /* Ratings */
+  --color-star: #fcbd03;
+  --color-star-off: #d9d9d9;
+
+  /* Typography */
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-clash-display), var(--font-inter), ui-sans-serif, sans-serif;
+  --font-legal: var(--font-roboto), var(--font-inter), ui-sans-serif, sans-serif;
+
+  --leading-display: 0.9;
+  --leading-body: 1.2;
+
+  --text-caption: 0.75rem;
+  --text-caption--line-height: 1.2;
+  --text-legal: 0.875rem;
+  --text-legal--line-height: 1.2;
+  --text-body: 1rem;
+  --text-body--line-height: 1.2;
+  --text-title: 1.125rem;
+  --text-title--line-height: 1.2;
+  --text-lead: 1.5rem;
+  --text-lead--line-height: 1.2;
+  --text-marquee: 1.4575rem;
+  --text-marquee--line-height: 0.9;
+
+  /* Display headings: 68px and 84px at 1440, scaled down fluidly. */
+  --text-h2: clamp(2.5rem, 1.25rem + 3.4vw, 4.25rem);
+  --text-h2--line-height: 0.9;
+  --text-h2-compact: clamp(2.5rem, 1.25rem + 3.2vw, 4rem);
+  --text-h2-compact--line-height: 0.9;
+  --text-h2-xl: clamp(3rem, 1.5rem + 4.2vw, 5.25rem);
+  --text-h2-xl--line-height: 0.9;
+
+  /* Oversized gradient watermarks, proportional to the 1440 frame. */
+  --text-watermark-offer: min(29.06vw, 26.154rem);
+  --text-watermark-offer--line-height: 0.9;
+  --text-watermark-know: min(10.4vw, 9.366rem);
+  --text-watermark-know--line-height: 0.9;
+  --text-watermark-rewards: min(16.54vw, 14.883rem);
+  --text-watermark-rewards--line-height: 0.9;
+  --text-watermark-footer: min(16.16vw, 14.548rem);
+  --text-watermark-footer--line-height: 0.9;
+
+  /* Layout */
+  --container-site: 80rem;
+  /* Narrowest phones (< 360 px) drop the header CTA, which stays in the menu. */
+  --breakpoint-xs: 22.5rem;
+
+  /* Radii */
+  --radius-field: 0.5rem;
+  --radius-card: 1rem;
+  --radius-offer: 1.3125rem;
+  --radius-panel: 2rem;
+
+  /* Blurs (Figma radius / 2) */
+  --blur-marquee: 13px;
+  --blur-button: 34px;
+  --blur-offer: 50px;
+  --blur-panel: 88px;
+  --blur-glass: 105px;
+  --blur-coin-sm: 5px;
+  --blur-coin: 9px;
+  --blur-glow-sm: 111px;
+  --blur-glow-md: 302px;
+  --blur-glow-lg: 517px;
+
+  /* Motion */
+  --animate-marquee: marquee 40s linear infinite;
+
+  @keyframes marquee {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(-50%);
+    }
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/*
+ * Glow backgrounds. Figma draws them as two heavily blurred ellipses (magenta, cyan).
+ * Each is approximated by a radial gradient: centre and radius come from the ellipse
+ * geometry, the falloff from its blur (outer radius = ellipse radius + 2 × CSS blur),
+ * the peak alpha from the blur coverage × layer opacity.
+ */
+@utility bg-glow-hero {
+  /* hero bg effect 31:1742 (1440 × 800), two stacked copies */
+  background-color: var(--color-black);
+  background-image:
+    radial-gradient(
+      124% 224% at 27.8% 13.5%,
+      color-mix(in srgb, var(--color-glow-magenta) 88%, transparent),
+      color-mix(in srgb, var(--color-glow-magenta) 44%, transparent) 42%,
+      color-mix(in srgb, var(--color-glow-magenta) 14%, transparent) 71%,
+      transparent
+    ),
+    radial-gradient(
+      124% 224% at 80.4% 98.6%,
+      color-mix(in srgb, var(--color-brand-cyan) 88%, transparent),
+      color-mix(in srgb, var(--color-brand-cyan) 44%, transparent) 42%,
+      color-mix(in srgb, var(--color-brand-cyan) 14%, transparent) 71%,
+      transparent
+    );
+}
+
+@utility bg-glow-pill {
+  /* hero bg effect scaled into the offer card button 31:1954, opacity 0.71 */
+  background-color: var(--color-black);
+  background-image:
+    radial-gradient(
+      124.5% 834% at 27.8% -51%,
+      color-mix(in srgb, var(--color-glow-magenta) 62%, transparent),
+      color-mix(in srgb, var(--color-glow-magenta) 31%, transparent) 42%,
+      color-mix(in srgb, var(--color-glow-magenta) 10%, transparent) 71%,
+      transparent
+    ),
+    radial-gradient(
+      124.5% 834% at 80.4% 265%,
+      color-mix(in srgb, var(--color-brand-cyan) 62%, transparent),
+      color-mix(in srgb, var(--color-brand-cyan) 31%, transparent) 42%,
+      color-mix(in srgb, var(--color-brand-cyan) 10%, transparent) 71%,
+      transparent
+    );
+}
+
+@utility bg-glow-offer {
+  /* offer card 31:1935 (411 × 410), two stacked copies */
+  background-color: var(--color-plum);
+  background-image:
+    radial-gradient(
+      99.8% 103% at 13.5% 49%,
+      color-mix(in srgb, var(--color-glow-magenta) 95%, transparent),
+      color-mix(in srgb, var(--color-glow-magenta) 48%, transparent) 46%,
+      color-mix(in srgb, var(--color-glow-magenta) 15%, transparent) 73%,
+      transparent
+    ),
+    radial-gradient(
+      99.8% 103% at 71.6% 75%,
+      color-mix(in srgb, var(--color-brand-cyan) 95%, transparent),
+      color-mix(in srgb, var(--color-brand-cyan) 48%, transparent) 46%,
+      color-mix(in srgb, var(--color-brand-cyan) 15%, transparent) 73%,
+      transparent
+    );
+}
+
+@utility bg-glow-card {
+  /* engagement card glow 31:4621 (card 385 × 292), opacity 0.39, over white 4 % */
+  background-color: color-mix(in srgb, var(--color-white) 4%, transparent);
+  background-image:
+    radial-gradient(
+      100% 132% at 79.9% -10.4%,
+      color-mix(in srgb, var(--color-glow-magenta) 25%, transparent),
+      color-mix(in srgb, var(--color-glow-magenta) 13%, transparent) 42%,
+      color-mix(in srgb, var(--color-glow-magenta) 4%, transparent) 71%,
+      transparent
+    ),
+    radial-gradient(
+      100% 132% at 119.9% 28.7%,
+      color-mix(in srgb, var(--color-brand-cyan) 25%, transparent),
+      color-mix(in srgb, var(--color-brand-cyan) 13%, transparent) 42%,
+      color-mix(in srgb, var(--color-brand-cyan) 4%, transparent) 71%,
+      transparent
+    );
+}
+
+@utility bg-glow-rewards {
+  /* referral card glow 31:4788 (card 1280 × 450), opacity 0.71 */
+  background-color: var(--color-night-card);
+  background-image:
+    radial-gradient(
+      81.8% 232.7% at 40% 0.2%,
+      color-mix(in srgb, var(--color-glow-magenta) 47%, transparent),
+      color-mix(in srgb, var(--color-glow-magenta) 24%, transparent) 42%,
+      color-mix(in srgb, var(--color-glow-magenta) 8%, transparent) 71%,
+      transparent
+    ),
+    radial-gradient(
+      81.8% 232.7% at 82% 57%,
+      color-mix(in srgb, var(--color-brand-cyan) 47%, transparent),
+      color-mix(in srgb, var(--color-brand-cyan) 24%, transparent) 42%,
+      color-mix(in srgb, var(--color-brand-cyan) 8%, transparent) 71%,
+      transparent
+    );
+}
+
+@utility bg-glow-footer {
+  /* footer 31:4885 (1442 × 625) */
+  background-color: var(--color-plum-deep);
+  background-image:
+    radial-gradient(
+      72.6% 167% at 34% 83.7%,
+      color-mix(in srgb, var(--color-glow-magenta) 66%, transparent),
+      color-mix(in srgb, var(--color-glow-magenta) 33%, transparent) 42%,
+      color-mix(in srgb, var(--color-glow-magenta) 11%, transparent) 71%,
+      transparent
+    ),
+    radial-gradient(
+      72.6% 167% at 71% 125%,
+      color-mix(in srgb, var(--color-brand-cyan) 66%, transparent),
+      color-mix(in srgb, var(--color-brand-cyan) 33%, transparent) 42%,
+      color-mix(in srgb, var(--color-brand-cyan) 11%, transparent) 71%,
+      transparent
+    );
+}
+
+/* Gradient text used by the watermarks ("OFFRE", "LE SAVIEZ-VOUS ?", "REWARDS"). */
+@utility text-gradient-brand {
+  background-image: linear-gradient(
+    to right,
+    var(--color-gradient-from),
+    var(--color-gradient-to)
+  );
+  background-clip: text;
+  color: transparent;
+}
+
+/* Same gradient plus Figma's second fill: black at 83 % over the lower half ("LE SAVIEZ-VOUS ?", "REWARDS"). */
+@utility text-gradient-brand-fade {
+  background-image:
+    linear-gradient(to bottom, transparent 50%, color-mix(in srgb, var(--color-black) 83%, transparent) 85.7%),
+    linear-gradient(to right, var(--color-gradient-from), var(--color-gradient-to));
+  background-clip: text;
+  color: transparent;
+}
+
+@utility scrollbar-none {
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+@layer base {
+  body:has(dialog[open]) {
+    overflow: hidden;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-white font-sans text-body text-ink antialiased;
+  }
+
+  :focus-visible {
+    @apply outline-2 outline-offset-2 outline-brand;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+  }
 }
